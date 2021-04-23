@@ -125,4 +125,28 @@ describe('Auth middleware', () => {
       });
     }, 500);
   });
+  describe('loginValidation', () => {
+    it('responds with a 401 and invalid creds if username does not exist', async () => {
+      const resFakeUser = await request(server).post('/api/auth/login').send({
+        username: 'elvis',
+        password: '12345',
+      });
+
+      expect(resFakeUser.status).toBe(401);
+      expect(resFakeUser.body).toMatchObject({
+        message: 'invalid credentials',
+      });
+    }, 500);
+    it('responds with a 401 and invalid creds if password incorrect', async () => {
+      const resWrongPass = await request(server).post('/api/auth/login').send({
+        username: 'Guy',
+        password: '123h12uncu',
+      });
+
+      expect(resWrongPass.status).toBe(401);
+      expect(resWrongPass.body).toMatchObject({
+        message: 'invalid credentials',
+      });
+    });
+  });
 });
