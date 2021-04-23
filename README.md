@@ -76,6 +76,12 @@ These goals may or may not be things you have learned in this module but they bu
 Be prepared to demonstrate your understanding of this week's concepts by answering questions on the following topics.
 
 1. Differences between using _sessions_ or _JSON Web Tokens_ for authentication.
+  There are various differences. The main practical difference is that with sessions, the server must handle authentication whereas with JWOT the client does. Sessions authenticates users by using cookies that map to specific session information which is ideally persisted in a database. On the other hand, clients must include tokens in their Authorization headers with every request that requires authentication.
+
 2. What does `bcryptjs` do to help us store passwords in a secure manner?
+  Bcrypt is an open-source library that allows us to hash passwords to then be stored securely. The library also allows to specify number of hashing rounds, which can be done dynamically with env variables. We can also compare hashed passwords from our db with provided password to validate a user.
+
 3. How are unit tests different from integration and end-to-end testing?
+  Unit tests usually test single functions or elements of an application in isolation. Unit tests are meant to be run often so they must run quickly and be focused on one behavior or functionality. 
 4. How does _Test Driven Development_ change the way we write applications and tests?
+Test driven development refers to writing tests for our code before writing code. This encourages the developer to work with the end goal in mind first. TDD flow usually involves starting with a broken test and trying to write the minimal code to bring the test to a passing state, then refactor code (with the tests checking for functionality) and then rinse & repeat.
