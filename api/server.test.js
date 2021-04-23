@@ -45,7 +45,7 @@ describe('Auth endpoints', () => {
         .post('/api/auth/login')
         .send({ username: 'Guy', password: '1234' });
       expect(res.body.message).toMatch(`welcome, Guy`);
-    },500);
+    }, 500);
     it('returns token on valid login', async () => {
       let res = await request(server)
         .post('/api/auth/login')
@@ -67,13 +67,13 @@ describe('Auth endpoints', () => {
         subject: 2,
         username: 'Guyguy',
       });
-    },500);
+    }, 500);
   });
 });
 
 describe('Auth middleware', () => {
   describe('registerPayload', () => {
-    it('responds with status 400 if username or password missing', async () => {
+    it('responds with status 401 if username or password missing', async () => {
       const resMissingPass = await request(server).post('/api/auth/register').send({
         username: 'shrek',
       });
@@ -82,13 +82,47 @@ describe('Auth middleware', () => {
       });
       expect(resMissingPass.status).toBe(401);
       expect(resMissingUser.status).toBe(401);
-    });
+      expect(resMissingPass.body).toMatchObject({
+        message: 'username and password required',
+      });
+      expect(resMissingUser.body).toMatchObject({
+        message: 'username and password required',
+      });
+    }, 500);
     it('responds with username taken if taken', async () => {
       const res = await request(server).post('/api/auth/register').send({
         username: 'Guy',
         password: '12345',
       });
       expect(res.body).toMatchObject({ message: 'username taken' });
-    });
+    }, 500);
+  });
+  describe('checkUsernameExists', () => {
+    it('responds with 401 and invalid credentials message', async () => {
+      const res = await request(server).post('/api/auth/register').send({
+        username: 'nothing',
+        password: '1234',
+      });
+      expect(res.status).toBe(401);
+      expect(res.body).toMatchObject({ message: 'invalid credentials' });
+    }, 500);
+  });
+  describe('loginPayload', () => {
+    it('responds with 401 if username or password are missing', async () => {
+      const resMissingPass = await request(server).post('/api/auth/login').send({
+        username: 'shrek',
+      });
+      const resMissingUser = await request(server).post('/api/auth/login').send({
+        password: 'shrek',
+      });
+      expect(resMissingPass.status).toBe(401);
+      expect(resMissingUser.status).toBe(401);
+      expect(resMissingPass.body).toMatchObject({
+        message: 'username and password required',
+      });
+      expect(resMissingUser.body).toMatchObject({
+        message: 'username and password required',
+      });
+    }, 500);
   });
 });
