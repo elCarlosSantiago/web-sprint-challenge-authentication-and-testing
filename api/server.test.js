@@ -78,7 +78,7 @@ describe('Auth middleware', () => {
         username: 'shrek',
       });
       const resMissingUser = await request(server).post('/api/auth/register').send({
-        password: 'shrek',
+        password: '1234',
       });
       expect(resMissingPass.status).toBe(401);
       expect(resMissingUser.status).toBe(401);
@@ -99,7 +99,7 @@ describe('Auth middleware', () => {
   });
   describe('checkUsernameExists', () => {
     it('responds with 401 and invalid credentials message', async () => {
-      const res = await request(server).post('/api/auth/register').send({
+      const res = await request(server).post('/api/auth/login').send({
         username: 'nothing',
         password: '1234',
       });
