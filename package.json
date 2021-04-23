@@ -6,7 +6,10 @@
     "start": "node index.js",
     "server": "nodemon index.js",
     "migrate": "knex migrate:latest",
-    "test": "cross-env NODE_ENV=testing jest --watchAll --verbose --runInBand"
+    "rollback": "knex migrate:rollback",
+    "seed": "knex seed:run",
+    "test": "cross-env NODE_ENV=testing jest --watchAll --verbose --runInBand",
+    "dbreset": "npm run rollback && npm run migrate && npm run seed"
   },
   "repository": {
     "type": "git",
@@ -14,7 +17,9 @@
   },
   "license": "ISC",
   "dependencies": {
+    "cleaner": "*",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "helmet": "^4.4.1",
     "knex": "^0.95.4",
