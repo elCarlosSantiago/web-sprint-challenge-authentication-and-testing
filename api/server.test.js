@@ -140,13 +140,32 @@ describe('Auth middleware', () => {
     it('responds with a 401 and invalid creds if password incorrect', async () => {
       const resWrongPass = await request(server).post('/api/auth/login').send({
         username: 'Guy',
-        password: '123h12uncu',
+        password: '123h12',
       });
 
       expect(resWrongPass.status).toBe(401);
       expect(resWrongPass.body).toMatchObject({
         message: 'invalid credentials',
       });
+    });
+  });
+  describe('restricted', () => {
+    it('responds with "token required" & 401 if missing', async () => {
+      const res = await request(server).get('/api/jokes');
+      expect(res.status).toBe(401);
+      expect(res.body.message).toMatch(/token required/i);
+    });
+    it('responds with "invalid token" if invalid', async () => {
+      const res = await request(server).get('/api/jokes').set('Authorization', 'foobar');
+      expect(res.body.message).toMatch(/token invalid/i);
+    });
+    it('responds with jokes on valid token', async () => {
+      let res = await request(server)
+        .post('/api/auth/login')
+        .send({ username: 'Guy', password: '1234' });
+      res = await request(server).get('/api/jokes').set('Authorization', res.body.token);
+      console.log(res.body.length);
+      expect(res.body.length).toBe(3);
     });
   });
 });
